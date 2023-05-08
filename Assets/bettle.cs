@@ -16,11 +16,5 @@ public class bettle : Enemy
     }
 
     // Update is called once per frame
-    void Update()
-    {
-        if (transform.position.y < StaticPoint - 1)
-        {
-            rg.velocity = new Vector2(0, 2);
-        }
-    }
+    
 }
