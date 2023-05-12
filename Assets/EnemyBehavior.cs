@@ -10,6 +10,7 @@ public class EnemyBehavior : MonoBehaviour
     protected Animator anim;
     protected Rigidbody2D rg;
     public Enemy a;
+    public int Score;
 
 
     private void Start()

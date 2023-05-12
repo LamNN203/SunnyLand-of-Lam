@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using TMPro;
 
 public class PlayerController : MonoBehaviour
 {
@@ -21,6 +22,8 @@ public class PlayerController : MonoBehaviour
     public float OriginPointY;
     public Level1 Esc;
     public EnemyBehavior lam;
+    public LevelTransform nextLV;
+    
 
     //Inspector variable
     public float Jump;
@@ -29,10 +32,11 @@ public class PlayerController : MonoBehaviour
     public float Runspeed;
     public int Coins = 0;
     public LayerMask ground;
-    public Text CoinsNumber;
     public float Hurtforce;
     public int Health;
     public Text HealthNum;
+    private int ps; //Points Set
+    public Text CoinsNumber;
 
     void Start()
     {
@@ -42,10 +46,10 @@ public class PlayerController : MonoBehaviour
         HealthNum.text = Health.ToString();
         OriginPointX = transform.position.x;
         OriginPointY = transform.position.y;
+
     }
     void Update()
     {
-
         if (state != State.hurt)
         {
             Movecontrol();
@@ -57,11 +61,13 @@ public class PlayerController : MonoBehaviour
     // thu thap vat pham
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        // an xu
+        // an vat pham
         if (collision.tag == "collectable")
-        {
+        {            
             Destroy(collision.gameObject);
-            Coins += 1;
+            ScoreCollect mc = collision.gameObject.GetComponent<ScoreCollect>();
+            ps = mc.Score;
+            Coins += ps; // Cong diem khi an vat pham
             CoinsNumber.text = Coins.ToString();
         }
         //va cham voi QuestionBox
@@ -115,10 +121,13 @@ public class PlayerController : MonoBehaviour
         {
 
             Enemy enemy = other.gameObject.GetComponent<Enemy>();
+            
             if (state == State.falling)
             {
                 enemy.JumpedOn();
                 Jumping();
+                Coins += enemy.Score; // Cong diem khi an quai
+                CoinsNumber.text = Coins.ToString();
             }
             //hoat anh bi thuong
             else
@@ -146,6 +155,8 @@ public class PlayerController : MonoBehaviour
             {
                 enemy.TakeHit(1);
                 Jumping();
+                Coins += enemy.Score; // Cong diem khi danh quai
+                CoinsNumber.text = Coins.ToString();
             }
             //hoat anh bi thuong
             else
@@ -164,7 +175,7 @@ public class PlayerController : MonoBehaviour
             }
         }
             //va cham voi gai
-            if (other.gameObject.tag == "Spike")
+        if (other.gameObject.tag == "Spike")
         {
             state = State.hurt;
             HealthCount();
@@ -183,6 +194,11 @@ public class PlayerController : MonoBehaviour
             Destroy(other.gameObject);
             Health += 1;
             HealthNum.text = Health.ToString();
+        }
+        //va cham cong chuyen man
+        if(other.gameObject.tag == "lvTransform")
+        {
+            nextLV.Complete();
         }
     }
 
@@ -288,4 +304,6 @@ public class PlayerController : MonoBehaviour
         rb.velocity = new Vector2(rb.velocity.x, -7);
         state = State.falling;
     }
+
+
 }

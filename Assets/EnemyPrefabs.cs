@@ -6,6 +6,7 @@ public class Enemy : MonoBehaviour
 {
     protected Animator anim;
     protected Rigidbody2D rg;
+    public int Score;
 
     protected virtual void Start()
     {
