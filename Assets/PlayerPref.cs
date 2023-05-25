@@ -8,9 +8,9 @@ public class PlayerPref : MonoBehaviour
     public int TempHighscore;
     public PlayerController temps;
 
-
     public void Start()
     {
+        temps = FindObjectOfType<PlayerController>();
         // load diem cao tam thoi
         TempHighscore = LoadHighscore(level); 
 
