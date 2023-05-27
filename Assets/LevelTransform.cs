@@ -5,23 +5,17 @@ using UnityEngine.SceneManagement;
 
 public class LevelTransform : MonoBehaviour
 {
-    private void OnCollisionEnter2D(Collision2D collision)
-    {
-        if(collision.gameObject.name == "Player")
-        {
-            Complete();
-        }
-    }
+    public playGameScript info;
+    public int ind;
     void Start()
     {
-        
+        info = FindObjectOfType<playGameScript>();
     }
     void Update()
     {
-        
     }
-    private void Complete()
+    public void Complete()
     {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
+        info.playGamePressed(ind);
     }
 }
