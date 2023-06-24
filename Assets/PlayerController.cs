@@ -12,6 +12,7 @@ public class PlayerController : MonoBehaviour
     public State state = State.idle;
 
     //(Start) variable
+    public Transform pos;
     public Rigidbody2D rb;
     public Animator anim;
     public Collider2D coll;
@@ -21,8 +22,9 @@ public class PlayerController : MonoBehaviour
     public float OriginPointX;
     public float OriginPointY;
     public Level1 Esc;
-    public EnemyBehavior lam;
     public LevelTransform nextLV;
+    public Findplayer UIIndex;
+    Playercontrol control;
     
 
     //Inspector variable
@@ -34,16 +36,27 @@ public class PlayerController : MonoBehaviour
     public LayerMask ground;
     public float Hurtforce;
     public int Health;
-    public Text HealthNum;
     private int ps; //Points Set
-    public Text CoinsNumber;
+    public float hDirection;
+    public float yDirection = 0 ;
 
+    private void Awake()
+    {
+        GOV = FindObjectOfType<GameOverScreen>();
+
+
+        control = new Playercontrol();
+        control.Enable();
+
+    }
     void Start()
     {
+        UIIndex = FindObjectOfType<Findplayer>();
+        nextLV = FindObjectOfType<LevelTransform>();
         rb = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();
         coll = GetComponent<Collider2D>();
-        HealthNum.text = Health.ToString();
+        UIIndex.HealthText.text = Health.ToString();
         OriginPointX = transform.position.x;
         OriginPointY = transform.position.y;
 
@@ -68,7 +81,7 @@ public class PlayerController : MonoBehaviour
             ScoreCollect mc = collision.gameObject.GetComponent<ScoreCollect>();
             ps = mc.Score;
             Coins += ps; // Cong diem khi an vat pham
-            CoinsNumber.text = Coins.ToString();
+            UIIndex.CoinText.text = Coins.ToString();
         }
         //va cham voi QuestionBox
         if (collision.gameObject.tag == "QBox" && state == State.jumping)
@@ -84,7 +97,7 @@ public class PlayerController : MonoBehaviour
             //ra xu vs cong xu
             Spw.SpawnCoin();
             Coins += 1;
-            CoinsNumber.text = Coins.ToString();
+            UIIndex.CoinText.text = Coins.ToString();
         }
         //va cham voi HealthBox
         if (collision.gameObject.tag == "HBox" && state == State.jumping)
@@ -127,7 +140,7 @@ public class PlayerController : MonoBehaviour
                 enemy.JumpedOn();
                 Jumping();
                 Coins += enemy.Score; // Cong diem khi an quai
-                CoinsNumber.text = Coins.ToString();
+                UIIndex.CoinText.text = Coins.ToString();
             }
             //hoat anh bi thuong
             else
@@ -156,7 +169,7 @@ public class PlayerController : MonoBehaviour
                 enemy.TakeHit(1);
                 Jumping();
                 Coins += enemy.Score; // Cong diem khi danh quai
-                CoinsNumber.text = Coins.ToString();
+                UIIndex.CoinText.text = Coins.ToString();
             }
             //hoat anh bi thuong
             else
@@ -193,11 +206,12 @@ public class PlayerController : MonoBehaviour
         {
             Destroy(other.gameObject);
             Health += 1;
-            HealthNum.text = Health.ToString();
+            UIIndex.HealthText.text = Health.ToString();
         }
         //va cham cong chuyen man
         if(other.gameObject.tag == "lvTransform")
         {
+
             nextLV.Complete();
         }
     }
@@ -206,7 +220,7 @@ public class PlayerController : MonoBehaviour
     {
         //tru mau
         Health -= 1;
-        HealthNum.text = Health.ToString();
+        UIIndex.HealthText.text = Health.ToString();
         //reset man
         if (Health <= 0)
         {
@@ -216,15 +230,16 @@ public class PlayerController : MonoBehaviour
     }
 
     //di chuyen nhan vat
-    private void Movecontrol()
+    public void Movecontrol()
     {
-        float hDirection = Input.GetAxis("Horizontal");
-
-        //esc game
-        if (Input.GetKeyDown(KeyCode.Escape))
+        control.land.move.performed += ctx =>
         {
-            Esc.BackToMenu();
-        }
+            hDirection = ctx.ReadValue<float>();
+        };
+        control.land.Jump.performed += cts =>
+        {
+            yDirection = cts.ReadValue<float>();
+        };
         //Moving left
         if (hDirection < 0)
         {
@@ -238,18 +253,21 @@ public class PlayerController : MonoBehaviour
             transform.localScale = new Vector2(1, 1);
         }
         //Jumping
-         if (coll.IsTouchingLayers(ground) && !Input.GetButton("Jump"))
+         if (coll.IsTouchingLayers(ground) && yDirection > 0)
         {
             doubleJump = false;
         }
-         if (Input.GetButtonDown("Jump"))
+         if (yDirection > 0)
         {
             if ( coll.IsTouchingLayers(ground) || doubleJump)
             Jumping();
             doubleJump = !doubleJump ;
         }
-       
-
+        //esc game
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            Esc.BackToMenu();
+        }
     }
     
     //hoat anh
