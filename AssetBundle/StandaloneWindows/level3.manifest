@@ -1,12 +1,12 @@
 ManifestFileVersion: 0
-CRC: 1446660498
+CRC: 1303149180
 Hashes:
   AssetFileHash:
     serializedVersion: 2
-    Hash: f3284ab64b4dfed312e9b35979819916
+    Hash: 3330eedfa74ea60fbdcffd37c334d5ac
   TypeTreeHash:
     serializedVersion: 2
-    Hash: ee6531c4be222cc571cb1d4e6611ec26
+    Hash: f854bd639ae256ae804f2082d3e9d223
 HashAppended: 0
 ClassTypes:
 - Class: 1
@@ -55,6 +55,8 @@ ClassTypes:
   Script: {fileID: 11500000, guid: 5525f8ff4f231f9448aa7ed04f43460f, type: 3}
 - Class: 114
   Script: {fileID: 11500000, guid: dc42784cf147c0c48a680349fa168899, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: 6d54531977ecb194c95e2d3aa7a5d72a, type: 3}
 - Class: 114
   Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
 - Class: 114
@@ -127,5 +129,5 @@ ClassTypes:
   Script: {instanceID: 0}
 SerializeReferenceClassIdentifiers: []
 Assets:
-- Assets/Scenes/Level3.unity
+- Assets/Scenes/level3.unity
 Dependencies: []
